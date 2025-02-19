@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Share Your Code - CodeX</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;                                              
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #333;
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+      font-size: 30px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    nav {
+      display: flex;
+      justify-content: center;
+      background-color: #444;
+      padding: 10px;
+    }
+    nav a {
+      color: white;
+      margin: 0 20px;
+      text-decoration: none;
+      font-size: 18px;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+    .content {
+      padding: 40px;
+      text-align: center;
+    }
+
+    #shareCodeForm {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    #shareCodeForm input,
+    #shareCodeForm select,
+    #shareCodeForm textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    #shareCodeForm button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #shareCodeForm button:hover {
+      background-color: #45a049;
+    }
+
+    .shared-codes {
+      margin-top: 40px;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
+
+    .shared-codes ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .shared-codes li {
+      margin-bottom: 15px;
+      background-color: #f1f1f1;
+      padding: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .shared-codes li:hover {
+      background-color: #ddd;
+    }
+
+    .delete-button {
+      background-color: #e74c3c;
+      color: white;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .delete-button:hover {
+      background-color: #c0392b;
+    }
+  </style>
+  <link rel="icon" href="https://tse3.mm.bing.net/th?id=OIP.fslpDk38rBngk2a3E7W49QHaHa&pid=Api&P=0&h=180" type="image/png">
+</head>
+<body>
+
+  <header>Share Your Code - CodeX</header>
+
+  <nav>
+    <a href="test.html">Home</a>
+    <a href="codeloby.html">Code Lobby</a>
+    <a href="codesharingpage.html">Share Code</a>
+  </nav>
+
+  <main>
+    <div class="content">
+      <h2>Share Your Code with the World!</h2>
+      <form id="shareCodeForm">
+        <input type="text" id="codeTitle" placeholder="Enter title for your code" required><br>
+        <select id="codeType" required>
+          <option value="">Select Code Type</option>
+          <option value="JavaScript">JavaScript</option>
+          <option value="Python">Python</option>
+          <option value="HTML/CSS">HTML/CSS</option>
+          <option value="Java">Java</option>
+          <option value="C++">C++</option>
+        </select><br>
+        <textarea id="codeContent" placeholder="Paste your code here" rows="10" required></textarea><br>
+        <button type="submit">Share Code</button>
+      </form>
+
+      <!-- Display previously shared codes -->
+      <div class="shared-codes">
+        <h3>Your Shared Codes</h3>
+        <ul id="sharedCodesList"></ul>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Handle form submission to save the shared code
+    document.getElementById('shareCodeForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const codeTitle = document.getElementById('codeTitle').value;
+      const codeType = document.getElementById('codeType').value;
+      const codeContent = document.getElementById('codeContent').value;
+
+      // Save code to localStorage
+      const sharedCode = {
+        title: codeTitle,
+        type: codeType,
+        code: codeContent
+      };
+
+      let sharedCodes = JSON.parse(localStorage.getItem('sharedCodes')) || [];
+      sharedCodes.push(sharedCode);
+      localStorage.setItem('sharedCodes', JSON.stringify(sharedCodes));
+
+      alert('Code Shared Successfully!');
+      
+      // Reset the form
+      document.getElementById('shareCodeForm').reset();
+      displaySharedCodes(); // Update the list of shared codes
+    });
+
+    // Display shared codes
+    function displaySharedCodes() {
+      const sharedCodes = JSON.parse(localStorage.getItem('sharedCodes')) || [];
+      const sharedCodesList = document.getElementById('sharedCodesList');
+      sharedCodesList.innerHTML = '';
+
+      sharedCodes.forEach((code, index) => {
+        const li = document.createElement('li');
+        li.textContent = `${code.title} (${code.type})`;
+
+        // Create the Delete button
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Delete';
+        deleteButton.classList.add('delete-button');
+        deleteButton.addEventListener('click', function() {
+          // Show confirmation prompt
+          const isConfirmed = window.confirm("Are you sure you want to delete this code?");
+          
+          // If confirmed, delete the code
+          if (isConfirmed) {
+            deleteCode(index);
+          }
+        });
+
+        // Append the delete button to the list item
+        li.appendChild(deleteButton);
+
+        // Append the list item to the shared codes list
+        sharedCodesList.appendChild(li);
+      });
+    }
+
+    // Delete the selected code
+    function deleteCode(index) {
+      const sharedCodes = JSON.parse(localStorage.getItem('sharedCodes')) || [];
+      sharedCodes.splice(index, 1); // Remove the selected code
+      localStorage.setItem('sharedCodes', JSON.stringify(sharedCodes)); // Save the updated list
+
+      alert('Code Deleted Successfully!');
+      
+      displaySharedCodes(); // Update the list of shared codes
+    }
+
+    // Load shared codes when the page loads
+    displaySharedCodes();
+  </script>
+
+</body>
+</html>
