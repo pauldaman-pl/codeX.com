@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CodeX - Code Lobby</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #333;
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+      font-size: 30px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    nav {
+      display: flex;
+      justify-content: center;
+      background-color: #444;
+      padding: 10px;
+    }
+    nav a {
+      color: white;
+      margin: 0 20px;
+      text-decoration: none;
+      font-size: 18px;
+      letter-spacing: 1px;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+    .content {
+      padding: 40px;
+      text-align: center;
+    }
+
+    .search-bar {
+      margin-bottom: 30px;
+      padding: 10px;
+      font-size: 18px;
+      width: 80%;
+      max-width: 600px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      letter-spacing: 1px;
+    }
+
+    .filter-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+      gap: 20px;
+    }
+
+    .filter-container select {
+      padding: 10px;
+      font-size: 18px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      letter-spacing: 1px;
+    }
+
+    .code-card {
+      background-color: #282828;
+      color: white;
+      padding: 20px;
+      margin: 10px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      font-family: 'Courier New', Courier, monospace;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      transition: transform 0.3s ease-in-out;
+      cursor: pointer;
+      letter-spacing: 1px;
+    }
+
+    .code-card:hover {
+      transform: scale(1.05);
+    }
+
+    #codeContainer {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 20px;
+      justify-content: center;
+      margin-top: 30px;
+    }
+
+    .code-title {
+      font-size: 20px;
+      font-weight: bold;
+      color: #FF6347;
+      letter-spacing: 1px;
+    }
+
+    .code-type {
+      font-size: 16px;
+      font-style: italic;
+      color: #4CAF50;
+      letter-spacing: 1px;
+    }
+
+    .no-result {
+      font-size: 18px;
+      color: #ff6347;
+      font-weight: bold;
+      text-align: center;
+      margin-top: 20px;
+      letter-spacing: 1px;
+    }
+
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      justify-content: center;
+      align-items: center;
+      color: white;
+      padding: 20px;
+    }
+
+    .modal-content {
+      background-color: #333;
+      padding: 40px;
+      border-radius: 8px;
+      max-width: 800px;
+      width: 80%;
+      text-align: left;
+    }
+
+    .modal-title {
+      font-size: 24px;
+      font-weight: bold;
+      color: #FF6347;
+      letter-spacing: 2px;
+    }
+
+    .modal-code {
+      font-family: 'Courier New', Courier, monospace;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      font-size: 16px;
+      margin-top: 20px;
+      letter-spacing: 1px;
+    }
+
+    .close-btn {
+      background-color: #FF6347;
+      color: white;
+      border: none;
+      padding: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+      margin-top: 20px;
+    }
+
+   
+
+
+
+    header {
+      background-color: #333;
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+      font-size: 30px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    nav {
+      display: flex;
+      justify-content: center;
+      background-color: #444;
+      padding: 10px;
+    }
+    nav a {
+      color: white;
+      margin: 0 20px;
+      text-decoration: none;
+      font-size: 18px;
+      letter-spacing: 1px;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+    .content {
+      padding: 40px;
+      text-align: center;
+    }
+
+    .search-bar {
+      margin-bottom: 30px;
+      padding: 10px;
+      font-size: 18px;
+      width: 80%;
+      max-width: 600px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      letter-spacing: 1px;
+    }
+
+    .filter-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+      gap: 20px;
+    }
+
+    .filter-container select {
+      padding: 10px;
+      font-size: 18px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      letter-spacing: 1px;
+    }
+
+    .code-card {
+      background-color: #282828;
+      color: white;
+      padding: 20px;
+      margin: 10px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      font-family: 'Courier New', Courier, monospace;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      transition: transform 0.3s ease-in-out;
+      cursor: pointer;
+      letter-spacing: 1px;
+    }
+
+    .code-card:hover {
+      transform: scale(1.05);
+    }
+
+    #codeContainer {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 20px;
+      justify-content: center;
+      margin-top: 30px;
+    }
+
+    .code-title {
+      font-size: 20px;
+      font-weight: bold;
+      color: #FF6347;
+      letter-spacing: 1px;
+    }
+
+    .code-type {
+      font-size: 16px;
+      font-style: italic;
+      color: #4CAF50;
+      letter-spacing: 1px;
+    }
+
+    .no-result {
+      font-size: 18px;
+      color: #ff6347;
+      font-weight: bold;
+      text-align: center;
+      margin-top: 20px;
+      letter-spacing: 1px;
+    }
+
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      justify-content: center;
+      align-items: center;
+      color: white;
+      padding: 20px;
+    }
+
+    .modal-content {
+      background-color: #333;
+      padding: 40px;
+      border-radius: 8px;
+      max-width: 800px;
+      width: 80%;
+      text-align: left;
+    }
+
+    .modal-title {
+      font-size: 24px;
+      font-weight: bold;
+      color: #FF6347;
+      letter-spacing: 2px;
+    }
+
+    .modal-code {
+      font-family: 'Courier New', Courier, monospace;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      font-size: 16px;
+      margin-top: 20px;
+      letter-spacing: 1px;
+    }
+
+    .close-btn {
+      background-color: #FF6347;
+      color: white;
+      border: none;
+      padding: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+      margin-top: 20px;
+    }
+
+    .close-btn:hover {
+      background-color: #ff4537;
+    }
+  </style>
+
+  <link rel="icon" href="https://tse3.mm.bing.net/th?id=OIP.fslpDk38rBngk2a3E7W49QHaHa&pid=Api&P=0&h=180" type="image/png">
+
+</head>
+<body>
+
+  <header>CodeX - Code Lobby</header>
+
+  <nav>
+    <a href="test.html">Home</a>
+    <a href="codelobby.html">Code Lobby</a>
+    <a href="codesharingpage.html">Share Code</a>
+  </nav>
+
+  <main>
+    <div class="content">
+      <h2>Shared Code from Around the World</h2>
+
+      <!-- Search Bar and Filter Dropdown -->
+      <div class="filter-container">
+        <input type="text" id="searchBar" class="search-bar" placeholder="Search for code..." onkeyup="filterCode()" />
+        
+        <select id="codeTypeFilter" onchange="filterCode()">
+          <option value="">All Types</option>
+          <option value="JavaScript">JavaScript</option>
+          <option value="Python">Python</option>
+          <option value="HTML">HTML</option>
+          <option value="CSS">CSS</option>
+          <option value="Java">Java</option>
+          <option value="C++">C++</option>
+        </select>
+      </div>
+
+      <div id="codeContainer">
+        <!-- JavaScript Code -->
+        <div class="code-card">
+          <div class="code-title">JavaScript: Simple Calculator</div>
+          <div class="code-type">Type: JavaScript</div>
+          <div>let num1 = 5; let num2 = 10; let sum = num1 + num2; console.log('Sum:', sum);</div>
+        </div>
+
+        <!-- Python Code -->
+        <div class="code-card">
+          <div class="code-title">Python: Simple Calculator</div>
+          <div class="code-type">Type: Python</div>
+          <div>num1 = 5\nnum2 = 10\nsum = num1 + num2\nprint('Sum:', sum)</div>
+        </div>
+
+        <!-- HTML/CSS Code -->
+        <div class="code-card">
+          <div class="code-title">HTML/CSS: Responsive Button</div>
+          <div class="code-type">Type: HTML/CSS</div>
+          <div>&lt;button class="btn"&gt;Click Me&lt;/button&gt;</div>
+          <div>button { padding: 10px 20px; background-color: #4CAF50; border: none; color: white; font-size: 16px; }</div>
+        </div>
+
+        <!-- Java Code -->
+        <div class="code-card">
+          <div class="code-title">Java: Simple Java Program</div>
+          <div class="code-type">Type: Java</div>
+          <div>public class HelloWorld { public static void main(String[] args) { System.out.println("Hello, World!"); } }</div>
+        </div>
+
+        <!-- C++ Code -->
+        <div class="code-card">
+          <div class="code-title">C++: Hello World Program</div>
+          <div class="code-type">Type: C++</div>
+          <div>#include <iostream>\nusing namespace std;\nint main() {\n  cout &lt;&lt; "Hello, World!" &lt;&lt; endl;\n  return 0;\n}</div>
+        </div>
+      </div>
+
+      <div id="noResultMessage" class="no-result" style="display: none;">
+        No results found
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal for displaying a single code -->
+  <div id="codeModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-title" id="modalTitle">Code Title</div>
+      <div class="modal-code" id="modalCode">Code content will be displayed here.</div>
+      <button class="close-btn" onclick="closeModal()">Close</button>
+    </div>
+  </div>
+
+  <script>
+    // Load shared codes from localStorage and display them
+    function loadSharedCodes() {
+      const sharedCodes = JSON.parse(localStorage.getItem('sharedCodes')) || [];
+      const codeContainer = document.getElementById('codeContainer');
+      codeContainer.innerHTML = ''; // Clear existing codes
+
+      sharedCodes.forEach(code => {
+        const codeCard = document.createElement('div');
+        codeCard.classList.add('code-card');
+        
+        const codeTitle = document.createElement('div');
+        codeTitle.classList.add('code-title');
+        codeTitle.textContent = code.title;
+
+        const codeType = document.createElement('div');
+        codeType.classList.add('code-type');
+        codeType.textContent = `Type: ${code.language}`;
+
+        const codeContent = document.createElement('div');
+        codeContent.textContent = code.code;
+
+        codeCard.appendChild(codeTitle);
+        codeCard.appendChild(codeType);
+        codeCard.appendChild(codeContent);
+
+        codeCard.addEventListener('click', () => {
+          showCodeModal(code.title, code.code);
+        });
+
+        codeContainer.appendChild(codeCard);
+      });
+    }
+
+    function showCodeModal(title, code) {
+      const modal = document.getElementById('codeModal');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalCode = document.getElementById('modalCode');
+
+      modalTitle.textContent = title;
+      modalCode.textContent = code;
+      modal.style.display = 'flex';
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('codeModal');
+      modal.style.display = 'none';
+    }
+
+    // Search and Filter Function
+    function filterCode() {
+      const searchQuery = document.getElementById('searchBar').value.toLowerCase();
+      const codeTypeFilter = document.getElementById('codeTypeFilter').value;
+      const codeCards = document.querySelectorAll('.code-card');
+      let resultCount = 0;
+
+      codeCards.forEach(card => {
+        const title = card.querySelector('.code-title').textContent.toLowerCase();
+        const type = card.querySelector('.code-type').textContent.toLowerCase();
+
+        const matchesSearch = title.includes(searchQuery);
+        const matchesType = codeTypeFilter ? type.includes(codeTypeFilter.toLowerCase()) : true;
+
+        if (matchesSearch && matchesType) {
+          card.style.display = 'block';
+          resultCount++;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+
+      document.getElementById('noResultMessage').style.display = resultCount === 0 ? 'block' : 'none';
+    }
+
+    loadSharedCodes();
+  </script>
+
+</body>
+</html>
